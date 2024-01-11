@@ -1,11 +1,10 @@
-import 'package:contatosbloc/contacts_cubit/list/cubit/contacts_list_cubit.dart';
 import 'package:contatosbloc/repositories/contact_repository.dart';
 
 import '../../../model/contact.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'contacts_list_cubit.dart';
-part 'contacts_list_cubit_state.dart';
+part 'contact_list_cubit_state.dart';
+part 'contact_list_cubit.freezed.dart';
 
 class ContactListCubit extends Cubit<ContactListCubitState> {
   final ContactRepository _repository;

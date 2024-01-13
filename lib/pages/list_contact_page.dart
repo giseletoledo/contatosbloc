@@ -8,18 +8,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../contacts_cubit/list/cubit/contact_list_cubit_state.dart';
-import '../repositories/contact_repository.dart';
 import '../widgets/contact_item.dart';
 import 'add_contact_page.dart';
 
-class ContactList extends StatefulWidget {
-  const ContactList({super.key});
+class ListContactPage extends StatefulWidget {
+  const ListContactPage({super.key});
 
   @override
-  State<ContactList> createState() => _ContactListState();
+  State<ListContactPage> createState() => _ListContactPageState();
 }
 
-class _ContactListState extends State<ContactList> {
+class _ListContactPageState extends State<ListContactPage> {
   String? validateUrl(String? value) {
     if (value == null || value.isEmpty) {
       return 'Este campo é obrigatório.';
@@ -81,9 +80,9 @@ class _ContactListState extends State<ContactList> {
                 var contact = contacts[index];
                 return Dismissible(
                   onDismissed: (DismissDirection dismissDirection) async {
-                    await cubit.deleteContact(contact.objectId ?? "sem id");
+                    await cubit.deleteContact(contact.objectId!);
                   },
-                  key: Key(contact.objectId ?? "sem id"),
+                  key: Key(contact.objectId!),
                   child: ContactItem(
                     contact: contact,
                     onEditPressed: () {
@@ -189,7 +188,12 @@ class _ContactListState extends State<ContactList> {
                     contact.urlavatar = urlAvatarController.text;
 
                     // Limpe a imagem da URL
-                    await ContactRepository().updateContact(contact);
+                    //await ContactRepository().updateContact(contact);
+
+                    final contactCubit = BlocProvider.of<ContactListCubit>(
+                        context); // Access the cubit from context
+
+                    await contactCubit.updateContact(contact);
 
                     Navigator.of(context).pop();
                   },

@@ -3,8 +3,10 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../model/contact.dart';
 import '../repositories/contact_repository.dart';
 
@@ -55,8 +57,6 @@ class _AddContactPageState extends State<AddContactPage> {
     }
     return true;
   }
-
-  var carregando = false;
 
   @override
   Widget build(BuildContext context) {
@@ -200,8 +200,12 @@ class _AddContactPageState extends State<AddContactPage> {
           urlavatar: urlAvatar,
           idcontact: const Uuid().v4());
 
-      // Chame o método para criar o contato no repositório
-      await ContactRepository().createContact(newContact);
+      final contactCubit = BlocProvider.of<ContactListCubit>(
+          context); // Access the cubit from context
+
+      await contactCubit.addContact(newContact);
+
+      //await ContactRepository().createContact(newContact);
 
       // Limpe os campos após adicionar o contato
       _nameController.clear();

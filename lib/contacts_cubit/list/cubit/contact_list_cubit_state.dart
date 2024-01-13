@@ -2,8 +2,8 @@ part of 'contact_list_cubit.dart';
 
 @freezed
 class ContactListCubitState with _$ContactListCubitState {
-  factory ContactListCubitState.initial() = _Initial;
-  factory ContactListCubitState.loading() = _loading;
-  factory ContactListCubitState.data({required List<Contact> contacts}) = _Data;
-  factory ContactListCubitState.error({required String error}) = _Error;
+  const factory ContactListCubitState.initial() = _Initial;
+  const factory ContactListCubitState.loading() = _Loading;
+  const factory ContactListCubitState.loaded(List<Contact> contacts) = _Loaded;
+  const factory ContactListCubitState.error(String error) = _Error;
 }

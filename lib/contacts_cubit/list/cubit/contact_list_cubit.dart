@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:contatosbloc/repositories/contact_repository.dart';
 
 import '../../../model/contact.dart';

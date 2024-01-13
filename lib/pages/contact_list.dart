@@ -4,9 +4,12 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
+import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
+import '../model/contact.dart';
 import '../repositories/contact_repository.dart';
-import '../widgets/contact_item.dart';
 import 'add_contact_page.dart';
 
 class ContactList extends StatefulWidget {
@@ -52,70 +55,84 @@ class _ContactListState extends State<ContactList> {
     return true;
   }
 
-  ContactRepository contactRepository = ContactRepository();
-  var _contactList = [];
-  var carregando = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getContacts();
-  }
-
-  void getContacts() async {
-    setState(() {
-      carregando = true;
-    });
-    _contactList = await contactRepository.getContacts();
-    setState(() {
-      carregando = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider(
+      create: (context) => ContactListCubit(repository: ContactRepository()),
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('Lista de contatos'),
         ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () async {
-              await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const AddContactPage(),
-              ));
-              getContacts();
-            }),
-        body: Container(
-          child: Column(
-            children: [
-              carregando
+        body: BlocBuilder<ContactListCubit, ContactListCubitState>(
+          builder: (context, state) {
+            if (state is _Data) {
+              List<Contact> contacts = state.contacts;
+
+              return contacts.isEmpty
                   ? const Center(child: CircularProgressIndicator())
                   : Expanded(
                       child: ListView.builder(
-                          itemCount: _contactList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var contact = _contactList[index];
-                            return Dismissible(
-                                onDismissed:
-                                    (DismissDirection dismissDirection) async {
-                                  await contactRepository
-                                      .deleteContact(contact.objectId);
-                                  getContacts();
-                                },
-                                key: Key(contact.objectId),
-                                child: ContactItem(
-                                  contact: contact,
-                                  onEditPressed: () async {
-                                    await showEditDialog(context, contact);
-                                    getContacts();
-                                  },
-                                ));
-                          }),
-                    ),
-            ],
-          ),
-        ));
+                        itemCount: contacts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var contact = contacts[index];
+                          return Dismissible(
+                            onDismissed:
+                                (DismissDirection dismissDirection) async {
+                              await ContactRepository()
+                                  .deleteContact(contact.objectId);
+                              context.read<ContactListCubit>().findAll();
+                            },
+                            key: Key(contact.objectId),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    contact.urlavatar ?? 'sem imagem'),
+                              ),
+                              title: Text(contact.name ?? "sem nome"),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Telefone: ${contact.phone}"),
+                                  Text("Email: ${contact.email}"),
+                                  Text(
+                                      "Data de criação: ${contact.createdAt != null ? DateFormat('dd/MM/yyyy').format(contact.createdAt!) : 'Sem data'}")
+                                ],
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () {
+                                      showEditDialog(context, contact);
+                                      context
+                                          .read<ContactListCubit>()
+                                          .findAll();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+            } else {
+              return const Center(child: Text('Erro ao carregar contatos.'));
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () async {
+            await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const AddContactPage(),
+            ));
+            context.read<ContactListCubit>().findAll();
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> showEditDialog(BuildContext context, contact) async {

@@ -27,7 +27,7 @@ class ContactListCubit extends Cubit<ContactListCubitState> {
   Future<void> addContact(Contact contact) async {
     try {
       await _contactRepository.createContact(contact);
-      final contacts = await _contactRepository.getContacts();
+      final contacts = await _contactRepository.getContacts(); // Refresh list
       emit(ContactListCubitState.loaded(contacts));
     } catch (e) {
       emit(ContactListCubitState.error(e.toString()));

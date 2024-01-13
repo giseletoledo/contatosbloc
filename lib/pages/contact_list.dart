@@ -5,10 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
-import '../model/contact.dart';
+import '../contacts_cubit/list/cubit/contact_list_cubit_state.dart';
 import '../repositories/contact_repository.dart';
 import '../widgets/contact_item.dart';
 import 'add_contact_page.dart';
@@ -72,29 +71,33 @@ class _ContactListState extends State<ContactList> {
       ),
       body: BlocBuilder<ContactListCubit, ContactListCubitState>(
         builder: (context, state) {
-          if (state is ContactListCubitState._Loading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is ContactListCubitState.loaded) {
+          if (state is ContactListCubitLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ContactListCubitLoaded) {
+            final contacts = state.contacts;
             return ListView.builder(
-              itemCount: state.contacts,
+              itemCount: contacts.length,
               itemBuilder: (BuildContext context, int index) {
                 var contact = contacts[index];
                 return Dismissible(
                   onDismissed: (DismissDirection dismissDirection) async {
-                    await ContactRepository().deleteContact(contact.objectId);
-                    cubit.fetchContacts();
+                    await cubit.deleteContact(contact.objectId ?? "sem id");
                   },
-                  key: Key(contact.objectId),
+                  key: Key(contact.objectId ?? "sem id"),
                   child: ContactItem(
                     contact: contact,
                     onEditPressed: () {
                       showEditDialog(context, contact);
-                      cubit.fetchContacts(); // Atualiza a lista
+                      cubit.fetchContacts();
                     },
                   ),
                 );
               },
             );
+          } else if (state is ContactListCubitError) {
+            return Center(child: Text(state.errorMessage));
+          } else {
+            return Container();
           }
         },
       ),
@@ -104,7 +107,7 @@ class _ContactListState extends State<ContactList> {
           await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const AddContactPage(),
           ));
-          context.read<ContactListCubit>().fetchContacts();
+          cubit.fetchContacts();
         },
       ),
     );

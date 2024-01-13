@@ -1,9 +1,21 @@
-part of 'contact_list_cubit.dart';
+import '../../../model/contact.dart';
 
-@freezed
-class ContactListCubitState with _$ContactListCubitState {
-  const factory ContactListCubitState.initial() = _Initial;
-  const factory ContactListCubitState.loading() = _Loading;
-  const factory ContactListCubitState.loaded(List<Contact> contacts) = _Loaded;
-  const factory ContactListCubitState.error(String error) = _Error;
+abstract class ContactListCubitState {}
+
+class ContactListCubitLoading extends ContactListCubitState {}
+
+class ContactListCubitInitial extends ContactListCubitState {
+  ContactListCubitInitial();
+}
+
+class ContactListCubitLoaded extends ContactListCubitState {
+  final List<Contact> contacts;
+
+  ContactListCubitLoaded(this.contacts);
+}
+
+class ContactListCubitError extends ContactListCubitState {
+  final String errorMessage;
+
+  ContactListCubitError(this.errorMessage);
 }

@@ -8,7 +8,6 @@ import 'package:uuid/uuid.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../model/contact.dart';
-import '../repositories/contact_repository.dart';
 
 class AddContactPage extends StatefulWidget {
   const AddContactPage({super.key});

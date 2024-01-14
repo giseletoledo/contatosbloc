@@ -1,12 +1,14 @@
 # Contatos Bloc
 
+Acesso ao banco de dados back4app, com uso de http e o package dio, gerenciamento de estado usando o package flutter bloc e seu widget blocbuilder para mostrar e atualizar os dados na tela.
+
 ## Refatoração Lista de contatos com bloc
 *   Criar uma aplicação Flutter
 *   Criar um banco de dados / Back4App
 *   Fazer um cadastro de pessoa com foto de perfil
 *   Salvar apenas o path da imagem na base de dados
 *   Listar as pessoas em uma lista com sua respectiva foto
-*   Bloc e flutter no gerenciamento de estados
+*   Cubit(bloc)  e flutter no gerenciamento de estados
 
 <p align="center">
 <img width="33%" src="https://github.com/giseletoledo/contatosapp/blob/main/contatosapp1.png" alt="Screenshot cadastro de contato">

@@ -24,6 +24,16 @@ class _AddContactPageState extends State<AddContactPage> {
   final TextEditingController _urlAvatarController = TextEditingController();
   final ValueNotifier<String> _urlAvatarNotifier = ValueNotifier<String>('');
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _urlAvatarController.dispose();
+    _urlAvatarNotifier.dispose();
+    super.dispose();
+  }
+
   String? validateUrl(String? value) {
     if (value == null || value.isEmpty) {
       return 'Este campo é obrigatório.';

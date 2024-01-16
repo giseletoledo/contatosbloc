@@ -1,10 +1,10 @@
 import 'package:contatosbloc/contacts_cubit/list/cubit/contact_list_cubit.dart';
-import 'package:contatosbloc/pages/add_contact_page.dart';
+import 'package:contatosbloc/views/add_contact_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'pages/list_contact_page.dart';
+import 'views/list_contact_view.dart';
 import 'repositories/contact_repository.dart';
 
 void main() async {
@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
         title: 'Contatos',
         initialRoute: '/',
         routes: {
-          '/': (context) => const ListContactPage(),
-          '/adiciona': (context) => const AddContactPage(),
+          '/': (context) => const ListContactView(),
+          '/adiciona': (context) => const AddContactView(),
         },
       ),
     );

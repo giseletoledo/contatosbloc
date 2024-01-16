@@ -9,14 +9,14 @@ import 'package:uuid/uuid.dart';
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../model/contact.dart';
 
-class AddContactPage extends StatefulWidget {
-  const AddContactPage({super.key});
+class AddContactView extends StatefulWidget {
+  const AddContactView({super.key});
 
   @override
-  State<AddContactPage> createState() => _AddContactPageState();
+  State<AddContactView> createState() => _AddContactViewState();
 }
 
-class _AddContactPageState extends State<AddContactPage> {
+class _AddContactViewState extends State<AddContactView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();

@@ -9,16 +9,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../contacts_cubit/list/cubit/contact_list_cubit_state.dart';
 import '../widgets/contact_item.dart';
-import 'add_contact_page.dart';
+import 'add_contact_view.dart';
 
-class ListContactPage extends StatefulWidget {
-  const ListContactPage({super.key});
+class ListContactView extends StatefulWidget {
+  const ListContactView({super.key});
 
   @override
-  State<ListContactPage> createState() => _ListContactPageState();
+  State<ListContactView> createState() => _ListContactViewState();
 }
 
-class _ListContactPageState extends State<ListContactPage> {
+class _ListContactViewState extends State<ListContactView> {
   String? validateUrl(String? value) {
     if (value == null || value.isEmpty) {
       return 'Este campo é obrigatório.';
@@ -104,7 +104,7 @@ class _ListContactPageState extends State<ListContactPage> {
         child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const AddContactPage(),
+            builder: (context) => const AddContactView(),
           ));
           cubit.fetchContacts();
         },

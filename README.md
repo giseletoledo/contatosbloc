@@ -29,3 +29,8 @@ Para executar o aplicativo Flutter, siga os passos abaixo:
 ```
 flutter run
 ```
+ Observação: necessário criar um arquivo .env no mesmo nível do yaml e colocar as informações geradas no cadastro no site back4app:
+
+BACK4APPAPPLICATIONID=seucodigogerado
+BACK4APPRESTAPIKEY=seucodigogerado
+BACK4APPBASEURL=https://parseapi.back4app.com/nomedobanco

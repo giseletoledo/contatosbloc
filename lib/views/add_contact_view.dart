@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +5,7 @@ import 'package:uuid/uuid.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../model/contact.dart';
+import '../utils/validateUrls.dart';
 
 class AddContactView extends StatefulWidget {
   const AddContactView({super.key});
@@ -32,39 +30,6 @@ class _AddContactViewState extends State<AddContactView> {
     _urlAvatarController.dispose();
     _urlAvatarNotifier.dispose();
     super.dispose();
-  }
-
-  String? validateUrl(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Este campo é obrigatório.';
-    }
-    if (!value.startsWith('http://') && !value.startsWith('https://')) {
-      // A URL começa com "http://" ou "https://", considerando válida.
-      return 'A URL deve começar com "http://" ou "https://".';
-    } else if (value.startsWith('data:image')) {
-      // A URL parece ser uma imagem codificada em base64, considerando inválida.
-      return 'Esta URL parece ser uma imagem codificada em base64.';
-    }
-    return null;
-  }
-
-  bool isValidUrl(String url, {Uint8List? imageBytes}) {
-    if (url.isEmpty ||
-        (!url.startsWith('http://') && !url.startsWith('https://'))) {
-      return false; // A URL não começa com "http://" ou "https://", então é inválida.
-    }
-
-    final regex = RegExp('^data:image');
-    if (regex.hasMatch(url)) {
-      try {
-        imageBytes = Uint8List.fromList(base64.decode(url.split(",").last));
-      } catch (e) {
-        // Lida com erros na conversão da URL `data:`
-        imageBytes = null;
-        return false;
-      }
-    }
-    return true;
   }
 
   @override

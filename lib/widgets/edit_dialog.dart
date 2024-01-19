@@ -4,23 +4,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
-import '../utils/validateUrls.dart';
+import '../utils/validate_urls.dart';
 
-class EditContactDialog extends StatelessWidget {
+class EditContactDialog extends StatefulWidget {
   final Contact contact;
-  final TextEditingController nameController;
-  final TextEditingController phoneController;
-  final TextEditingController emailController;
-  final TextEditingController urlAvatarController;
 
   const EditContactDialog({
     super.key,
     required this.contact,
-    required this.nameController,
-    required this.phoneController,
-    required this.emailController,
-    required this.urlAvatarController,
   });
+
+  @override
+  State<EditContactDialog> createState() => _EditContactDialogState();
+}
+
+class _EditContactDialogState extends State<EditContactDialog> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _urlAvatarController = TextEditingController();
+  final ValueNotifier<String> _urlAvatarNotifier = ValueNotifier<String>('');
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Inicialize os controladores com os dados do contato
+    _nameController.text = widget.contact.name ?? '';
+    _phoneController.text = widget.contact.phone ?? '';
+    _emailController.text = widget.contact.email ?? '';
+    _urlAvatarController.text = widget.contact.urlavatar ?? '';
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _urlAvatarController.dispose();
+    _urlAvatarNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +55,15 @@ class EditContactDialog extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              _showImagePreview(urlAvatarController.text, context);
+              _showImagePreview(_urlAvatarController.text, context);
             },
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: urlAvatarController.text.isNotEmpty &&
-                      isValidUrl(urlAvatarController.text)
-                  ? CachedNetworkImageProvider(urlAvatarController.text)
+              backgroundImage: _urlAvatarController.text.isNotEmpty &&
+                      isValidUrl(_urlAvatarController.text)
+                  ? CachedNetworkImageProvider(_urlAvatarController.text)
                   : null,
-              child: urlAvatarController.text.isNotEmpty
+              child: _urlAvatarController.text.isNotEmpty
                   ? null
                   : const Icon(
                       Icons.camera,
@@ -49,19 +73,19 @@ class EditContactDialog extends StatelessWidget {
             ),
           ),
           TextFormField(
-            controller: nameController,
+            controller: _nameController,
             decoration: const InputDecoration(labelText: 'Name'),
           ),
           TextFormField(
-            controller: phoneController,
+            controller: _phoneController,
             decoration: const InputDecoration(labelText: 'Phone'),
           ),
           TextFormField(
-            controller: emailController,
+            controller: _emailController,
             decoration: const InputDecoration(labelText: 'Email'),
           ),
           TextFormField(
-            controller: urlAvatarController,
+            controller: _urlAvatarController,
             decoration:
                 const InputDecoration(labelText: 'URL da Imagem de Perfil'),
             validator: validateUrl,
@@ -78,15 +102,16 @@ class EditContactDialog extends StatelessWidget {
         TextButton(
           child: const Text("Save"),
           onPressed: () async {
-            // Update the contact with the edited data
-            contact.name = nameController.text;
-            contact.phone = phoneController.text;
-            contact.email = emailController.text;
-            contact.urlavatar = urlAvatarController.text;
-
-            // Update the contact using the cubit
             final contactCubit = BlocProvider.of<ContactListCubit>(context);
-            await contactCubit.updateContact(contact);
+
+            //Atualiza os dados do contato com os valores do formulário
+            widget.contact.name = _nameController.text;
+            widget.contact.phone = _phoneController.text;
+            widget.contact.email = _emailController.text;
+            widget.contact.urlavatar = _urlAvatarController.text;
+
+            //Atualização no estado
+            await contactCubit.updateContact(widget.contact);
 
             Navigator.of(context).pop();
           },
@@ -94,8 +119,6 @@ class EditContactDialog extends StatelessWidget {
       ],
     );
   }
-
-  // ... (rest of your code for validateUrl and isValidUrl functions)
 }
 
 void _showImagePreview(String url, BuildContext context) {

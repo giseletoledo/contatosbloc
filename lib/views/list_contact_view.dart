@@ -15,26 +15,10 @@ class ListContactView extends StatefulWidget {
 }
 
 class _ListContactViewState extends State<ListContactView> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _urlAvatarController = TextEditingController();
-  final ValueNotifier<String> _urlAvatarNotifier = ValueNotifier<String>('');
-
   @override
   void initState() {
     super.initState();
     context.read<ContactListCubit>().fetchContacts();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _urlAvatarController.dispose();
-    _urlAvatarNotifier.dispose();
-    super.dispose();
   }
 
   @override
@@ -67,10 +51,6 @@ class _ListContactViewState extends State<ListContactView> {
                         context: context,
                         builder: (context) => EditContactDialog(
                           contact: contact,
-                          nameController: _nameController,
-                          phoneController: _phoneController,
-                          emailController: _emailController,
-                          urlAvatarController: _urlAvatarController,
                         ),
                       );
                       cubit.fetchContacts();

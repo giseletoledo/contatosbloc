@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
+import '../utils/validate_email.dart';
 import '../utils/validate_urls.dart';
 
 class EditContactDialog extends StatefulWidget {
@@ -74,15 +75,35 @@ class _EditContactDialogState extends State<EditContactDialog> {
           ),
           TextFormField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Name'),
+            decoration: const InputDecoration(labelText: 'Nome'),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Por favor preencha o nome';
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _phoneController,
-            decoration: const InputDecoration(labelText: 'Phone'),
+            decoration: const InputDecoration(labelText: 'Telefone'),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Por favor preencha um número de telefone';
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _emailController,
             decoration: const InputDecoration(labelText: 'Email'),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter your email';
+              } else if (!isValidEmail(value)) {
+                return 'Por favor preencha um email válido';
+              }
+              return null;
+            },
           ),
           TextFormField(
             controller: _urlAvatarController,

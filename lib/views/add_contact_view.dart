@@ -5,7 +5,8 @@ import 'package:uuid/uuid.dart';
 
 import '../contacts_cubit/list/cubit/contact_list_cubit.dart';
 import '../model/contact.dart';
-import '../utils/validateUrls.dart';
+import '../utils/validate_email.dart';
+import '../utils/validate_urls.dart';
 
 class AddContactView extends StatefulWidget {
   const AddContactView({super.key});
@@ -108,8 +109,6 @@ class _AddContactViewState extends State<AddContactView> {
                 validator: validateUrl,
                 onChanged: (value) {
                   if (!isValidUrl(value)) {
-                    // Exiba uma mensagem de erro e não permita que o valor inválido seja definido
-                    // como o valor do campo.
                     _urlAvatarController.value = const TextEditingValue(
                       text: '',
                       selection: TextSelection.collapsed(offset: 0),
@@ -211,9 +210,5 @@ class _AddContactViewState extends State<AddContactView> {
         },
       );
     }
-  }
-
-  bool isValidEmail(String email) {
-    return RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(email);
   }
 }

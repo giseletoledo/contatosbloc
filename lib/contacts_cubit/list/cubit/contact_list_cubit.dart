@@ -57,6 +57,7 @@ class ContactListCubit extends Cubit<ContactListCubitState> {
   }
 
   void _emitErrorState(String errorMessage) {
+    //print('Erro ao adicionar contato: $errorMessage');
     emit(ContactListCubitError(errorMessage));
   }
 
